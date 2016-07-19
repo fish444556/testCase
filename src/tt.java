@@ -60,11 +60,11 @@ class tt {
 //							{'i', 'h', 'k', 'r'},
 //							{'i', 'f', 'l', 'v'}};
 
-		testTree tet = new testTree();
-		
+		testSudoku ts = new testSudoku();
+		char[][] tc1 = ts.testCase();
 		
 		Solution tt = new Solution();
-		int res = tt.kthSmallest(tet.tmpTree(), 4);
+		boolean res = tt.isValidSudoku(tc1);
 //		int res = tt.calculate("1+ 1");
 //		for (int i = 0; i < res.size(); i++) {
 //			System.out.print(res.get(i) + "\t");
@@ -88,36 +88,55 @@ class tt {
  */
 
 
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
-class Solution {
-    public int kthSmallest(TreeNode root, int k) {
-    	num = k;
-        return preOrder(root, --num).val;
-    }
 
-    private int num;
-    private TreeNode preOrder(TreeNode root, int k) {
-    	if (root == null ) {
-        	return root;
+
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        if (board == null || board.length == 0 || board[0].length == 0) {
+        	return false;
         }
-        TreeNode left = null, right = null;
-        if (root.left != null) {
-        	left = preOrder(root.left, --num);
+
+        boolean[] used = new boolean[9];
+        for (int i = 0; i < 9; i++) {
+        	for (int j = 0; j < 9; j++) {
+        		if (board[i][j] != '.' ) {
+                    if(used[board[i][j] - '1']) {
+            			return false;
+                    }
+            		used[board[i][j] - '1'] = true;
+                }
+        	}
+        	Arrays.fill(used, false);
         }
-        if ( num == 0) {
-        	return left;
+        Arrays.fill(used, false);
+        for (int i = 0; i < 9; i++) {
+        	for (int j = 0; j < 9; j++) {
+        		if (board[j][i] != '.' ) {
+                    if(used[board[j][i] - '1']) {
+            			return false;
+                    }
+            		used[board[j][i] - '1'] = true;
+                }
+        	}
+        	Arrays.fill(used, false);
         }
-        if (root.right != null) {
-	        right = preOrder(root.right, --num);
-	    }
-        return left != null ? left : right;
+        Arrays.fill(used, false);
+
+        for (int i = 0; i < 9; i += 3) {
+        	for (int j = 0; j < 9; j += 3) {
+        		for (int m = (i / 3) * 3; m < (i / 3) * 3 + 3; m++) {
+        			for (int n = (j / 3) * 3; n < (j / 3) * 3 + 3; n++) {
+        				if (board[m][n] != '.') {
+                            if(used[board[m][n] - '1']) {
+            					return false;
+                            }
+            				used[board[m][n] - '1'] = true;
+                        }
+        			}
+        		}
+        		Arrays.fill(used, false);
+        	}
+        }
+        return true;
     }
 }
