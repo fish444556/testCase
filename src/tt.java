@@ -64,13 +64,18 @@ class tt {
 		char[][] tc1 = ts.testCase();
 		
 		Solution tt = new Solution();
-		boolean res = tt.isValidSudoku(tc1);
+		tt.solveSudoku(tc1);
 //		int res = tt.calculate("1+ 1");
 //		for (int i = 0; i < res.size(); i++) {
 //			System.out.print(res.get(i) + "\t");
 //		}
-		
-		System.out.print(res);
+		for(int i=0; i<9; i++){
+			for(int j=0; j<9; j++){
+				System.out.print(tc1[i][j]);				
+			}
+			System.out.println("");
+		}
+//		System.out.print(tc1);
 	}
 	
 	
@@ -89,54 +94,72 @@ class tt {
 
 
 
+/**
+ * 
+ * @authors Jialin (fish444555@gmail.com)
+ * @date 2016-07-19
+ * @version $1.0$
+ * @refer 
+ * @problem 
+ */
+
 
 class Solution {
-    public boolean isValidSudoku(char[][] board) {
+    public void solveSudoku(char[][] board) {
         if (board == null || board.length == 0 || board[0].length == 0) {
-        	return false;
+        	return ;
         }
+        helper(board);
+        
+    }
 
-        boolean[] used = new boolean[9];
-        for (int i = 0; i < 9; i++) {
+    private boolean helper(char[][] board) {
+    	for (int i = 0; i < 9; i++) {
         	for (int j = 0; j < 9; j++) {
-        		if (board[i][j] != '.' ) {
-                    if(used[board[i][j] - '1']) {
-            			return false;
-                    }
-            		used[board[i][j] - '1'] = true;
-                }
-        	}
-        	Arrays.fill(used, false);
-        }
-        Arrays.fill(used, false);
-        for (int i = 0; i < 9; i++) {
-        	for (int j = 0; j < 9; j++) {
-        		if (board[j][i] != '.' ) {
-                    if(used[board[j][i] - '1']) {
-            			return false;
-                    }
-            		used[board[j][i] - '1'] = true;
-                }
-        	}
-        	Arrays.fill(used, false);
-        }
-        Arrays.fill(used, false);
-
-        for (int i = 0; i < 9; i += 3) {
-        	for (int j = 0; j < 9; j += 3) {
-        		for (int m = (i / 3) * 3; m < (i / 3) * 3 + 3; m++) {
-        			for (int n = (j / 3) * 3; n < (j / 3) * 3 + 3; n++) {
-        				if (board[m][n] != '.') {
-                            if(used[board[m][n] - '1']) {
-            					return false;
-                            }
-            				used[board[m][n] - '1'] = true;
-                        }
+        		if (board[i][j] == '.') {
+        			// char ch = board[i][j];
+        			for (char k = '1'; k <= '9'; k++) {
+        				
+        				if (isValid(board, i, j, k)) {
+        					board[i][j] = k;
+        					if (helper(board)) {
+        						return true;
+        					}
+        					else {
+        						board[i][j] = '.';        						
+        					}
+        						
+        				}
         			}
+        			// board[i][j] = ch;
+        			return false;
         		}
-        		Arrays.fill(used, false);
         	}
         }
         return true;
     }
+
+    private boolean isValid(char[][] board, int x, int y, char ch) {
+    	// boolean[] used = new boolean[9];
+    	for (int i = 0; i < 9; i++) {
+    		if (board[i][y] == ch) {
+    			return false;
+    		}
+    	}
+    	for (int i = 0; i < 9; i++) {
+    		if (board[x][i] == ch) {
+    			return false;
+    		}
+    	}
+    	for (int i = x / 3 * 3; i < x / 3 * 3 + 3; i++) {
+    		for (int j = y / 3 * 3; j < y / 3 * 3 + 3; j++) {
+				if (board[i][j] == ch) {
+					return false;
+				}
+    		}
+    	}
+    	return true;
+    }
 }
+
+
